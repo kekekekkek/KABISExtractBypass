@@ -39,6 +39,7 @@ int main()
 {
 	HWND hKabisWnd = NULL;
 
+	DWORD dwStatus = NULL;
 	DWORD dwRecords = NULL;
 	DWORD dwInstructs = NULL;
 
@@ -50,12 +51,17 @@ int main()
 	int iCurRecords = -1;
 	bool bSaveRecords = true;
 
+	int iCount = 0;
+	int iStatus = 0;
+	int iProgress = 0;
+	bool bSaveStatus = false;
+
 	setlocale(LC_ALL, "");
 	SetConsoleTitleA("KABISExtractBypass by kek");
 
-	cout << "ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ ÐºÐ»Ð°Ð²Ð¸ÑˆÑƒ \"Space\" Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð·Ð°Ð²ÐµÑ€ÑˆÐ¸Ñ‚ÑŒ Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹...\n\n";
+	cout << "Íàæìèòå êëàâèøó \"Space\" ÷òîáû çàâåðøèòü ðàáîòó ïðîãðàììû...\n\n";
 	cout << "-----------------------------------------------------------\n";
-	cout << "ÐŸÐ¾Ð¸ÑÐº Ð¾ÐºÐ½Ð° Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹";
+	cout << "Ïîèñê îêíà ïðîãðàììû";
 
 	while (true)
 	{
@@ -68,13 +74,12 @@ int main()
 
 			if (IsWindow(hKabisWnd))
 			{
-				cout << "\nÐžÐºÐ½Ð¾ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹ Ð±Ñ‹Ð»Ð¾ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾!\n";
+				cout << "\nÎêíî ïðîãðàììû áûëî íàéäåíî!\n";
 				GetWindowThreadProcessId(hKabisWnd, &dwProcessId);
 
 				if (dwProcessId)
 				{
-					cout << "Ð˜Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸ÐºÐ°Ñ‚Ð¾Ñ€ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐ°: [" << dwProcessId << "]\n";
-
+					cout << "Èäåíòèôèêàòîð ïðîöåññà: [" << dwProcessId << "]\n";
 					hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, dwProcessId);
 
 					if (hProcess)
@@ -83,7 +88,7 @@ int main()
 
 						if (hKabis)
 						{
-							cout << "Ð˜Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸ÐºÐ°Ñ‚Ð¾Ñ€ Ð¼Ð¾Ð´ÑƒÐ»Ñ: [" << hKabis << "]\n";
+							cout << "Èäåíòèôèêàòîð ìîäóëÿ: [" << hKabis << "]\n";
 							cout << "-----------------------------------------------------------\n";
 
 						ReadMem:
@@ -92,8 +97,8 @@ int main()
 							{
 								if (ReadProcessMemory(hProcess, (LPVOID)((DWORD)dwRecords + 0x44), &dwRecords, 4, NULL))
 								{
-									cout << "\n[+] Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ:\n";
-									cout << "Ð—Ð°Ð¿Ð¸ÑÐµÐ¹ Ð² Ñ‚ÐµÐºÑƒÑ‰ÐµÐ¼ ÐºÐ°Ñ‚Ð°Ð»Ð¾Ð³Ðµ: [" << dwRecords << "]\n";
+									cout << "\n[+] Èíôîðìàöèÿ:\n";
+									cout << "Çàïèñåé â òåêóùåì êàòàëîãå: [" << dwRecords << "]\n";
 
 									int iResult = 0;
 									DWORD dwOldProtect = NULL;
@@ -121,41 +126,41 @@ int main()
 											SetWindowTextA(hKabisWnd, strSetTitle.c_str());
 										}
 
-										cout << "Ð’ÑÐµ Ð¸Ð½ÑÑ‚Ñ€ÑƒÐºÑ†Ð¸Ð¸ Ð±Ñ‹Ð»Ð¸ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ Ð¿Ñ€Ð¾Ð¿Ð°Ñ‚Ñ‡ÐµÐ½Ñ‹!\nÐ¢ÐµÐ¿ÐµÑ€ÑŒ Ð’Ñ‹ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð²Ñ‹Ð³Ñ€ÑƒÐ·Ð¸Ñ‚ÑŒ Ð°Ð±ÑÐ¾Ð»ÑŽÑ‚Ð½Ð¾ Ð²ÑÐµ Ð¸Ð¼ÐµÑŽÑ‰Ð¸ÐµÑÑ Ð·Ð°Ð¿Ð¸ÑÐ¸ Ð² Ð´Ð°Ð½Ð½Ð¾Ð¼ ÐºÐ°Ñ‚Ð°Ð»Ð¾Ð³Ðµ.\n";
+										cout << "Âñå èíñòðóêöèè áûëè óñïåøíî ïðîïàò÷åíû!\nÒåïåðü Âû ìîæåòå âûãðóçèòü àáñîëþòíî âñå èìåþùèåñÿ çàïèñè â äàííîì êàòàëîãå.\n";
 									}
 									else
-										cout << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿Ñ€Ð¾Ð¿Ð°Ñ‚Ñ‡Ð¸Ñ‚ÑŒ Ð¾Ð´Ð½Ñƒ Ð¸Ð»Ð¸ Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ð¸Ð½ÑÑ‚Ñ€ÑƒÐºÑ†Ð¸Ð¹.\n";
+										cout << "Íå óäàëîñü ïðîïàò÷èòü îäíó èëè íåñêîëüêî èíñòðóêöèé.\n";
 
 									iRecords = (dwRecords - 1);
 									iCurRecords = iRecords;
 								}
 								else
 								{
-									cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¿Ñ€Ð¸ Ñ‡Ñ‚ÐµÐ½Ð¸Ð¸ Ð¿Ð°Ð¼ÑÑ‚Ð¸!\n";
+									cout << "Îøèáêà ïðè ÷òåíèè ïàìÿòè!\n";
 									break;
 								}
 							}
 							else
 							{
-								cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¿Ñ€Ð¸ Ñ‡Ñ‚ÐµÐ½Ð¸Ð¸ Ð¿Ð°Ð¼ÑÑ‚Ð¸!\n";
+								cout << "Îøèáêà ïðè ÷òåíèè ïàìÿòè!\n";
 								break;
 							}
 						}
 						else
 						{
-							cout << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð½Ð°Ð¹Ñ‚Ð¸ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹.\n";
+							cout << "Íå óäàëîñü íàéòè ìîäóëü ïðîãðàììû.\n";
 							break;
 						}
 					}
 					else
 					{
-						cout << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð´Ð¾ÑÑ‚ÑƒÐ¿ Ðº Ð¿Ñ€Ð¾Ñ†ÐµÑÑÑƒ!\n";
+						cout << "Íå óäàëîñü ïîëó÷èòü äîñòóï ê ïðîöåññó!\n";
 						break;
 					}
 				}
 				else
 				{
-					cout << "ÐÐµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð¸Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸ÐºÐ°Ñ‚Ð¾Ñ€ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐ°.\n";
+					cout << "Íå óäàëîñü ïîëó÷èòü èäåíòèôèêàòîð ïðîöåññà.\n";
 					break;
 				}
 			}
@@ -170,26 +175,68 @@ int main()
 			{
 				bSaveRecords = false;
 
+				iStatus += ReadProcessMemory(hProcess, (LPVOID)((DWORD)hKabis + 0x0006CBD0), &dwStatus, 4, NULL);
+				iStatus += ReadProcessMemory(hProcess, (LPVOID)((DWORD)dwStatus + 0x104), &dwStatus, 4, NULL);
+
+				if (iStatus >= 2)
+				{
+					if (bSaveStatus)
+					{
+						iCount = 0;
+
+						iProgress = dwStatus;
+						bSaveStatus = false;
+
+						float fPercent = ((100.0f / iCurRecords) * iProgress);
+						cout << "\rÂûãðóæåíî êíèã " << iProgress << " èç " << iCurRecords << " (" << round(fPercent) << "%)";
+
+						if (iProgress >= iCurRecords)
+							cout << "\n";
+					}
+					else
+					{
+						if (iProgress != dwStatus)
+						{
+							if (dwStatus >= 1000
+								&& dwStatus < 500000)
+							{
+								if (iCount >= 10)
+									bSaveStatus = true;
+							}
+
+							iCount++;
+						}
+						else
+							iCount = 0;
+					}
+				}
+
 				if (ReadProcessMemory(hProcess, (LPVOID)((DWORD)hKabis + 0x30A384), &dwRecords, 4, NULL))
 				{
 					if (ReadProcessMemory(hProcess, (LPVOID)((DWORD)dwRecords + 0x44), &dwRecords, 4, NULL))
 						iCurRecords = dwRecords;
 					else
 					{
-						cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¿Ñ€Ð¸ Ñ‡Ñ‚ÐµÐ½Ð¸Ð¸ Ð¿Ð°Ð¼ÑÑ‚Ð¸!\n";
+						cout << "Îøèáêà ïðè ÷òåíèè ïàìÿòè!\n";
 						break;
 					}
 				}
 				else
 				{
-					cout << "ÐžÑˆÐ¸Ð±ÐºÐ° Ð¿Ñ€Ð¸ Ñ‡Ñ‚ÐµÐ½Ð¸Ð¸ Ð¿Ð°Ð¼ÑÑ‚Ð¸!\n";
+					cout << "Îøèáêà ïðè ÷òåíèè ïàìÿòè!\n";
 					break;
 				}
 			}
 
 			if (bSaveRecords)
 			{
-				cout << "Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ð¾ ÐºÐ°Ñ‚Ð°Ð»Ð¾Ð³Ðµ Ð±Ñ‹Ð»Ð° Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð°!\n";
+				CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+				GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbiInfo);
+
+				if (csbiInfo.dwCursorPosition.X != 0)
+					cout << "\n";
+
+				cout << "Èíôîðìàöèÿ î êàòàëîãå áûëà îáíîâëåíà!\n";
 				goto ReadMem;
 			}
 		}
@@ -203,7 +250,7 @@ int main()
 		}
 	}
 
-	cout << "Ð’Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹ Ð±Ñ‹Ð»Ð¾ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¾. ÐÐ°Ð¶Ð¼Ð¸Ñ‚Ðµ Ð»ÑŽÐ±ÑƒÑŽ ÐºÐ»Ð°Ð²Ð¸ÑˆÑƒ Ð´Ð»Ñ Ð¿Ñ€Ð¾Ð´Ð¾Ð»Ð¶ÐµÐ½Ð¸Ñ...\n";
+	cout << "Âûïîëíåíèå ïðîãðàììû áûëî çàâåðøåíî. Íàæìèòå ëþáóþ êëàâèøó äëÿ ïðîäîëæåíèÿ...\n";
 
 	system("pause");
 	return 0;
